@@ -12,6 +12,12 @@
         "sourceType": "module"
     },
     "rules": {
-        "semi": "off"
+        "semi": "off",
+        "import/extensions": [
+            "error",
+            {
+                "js": "always"
+            }
+        ]
     }
 }
