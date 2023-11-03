@@ -25,10 +25,10 @@ const addressSchema = new Schema<IAddress>(
   },
   { timestamps: true },
 )
-
-const Address = model<AddressDoc, AddressModel>('Address', addressSchema)
-Address.createIndexes()
 addressSchema.statics.build = (attrs: IAddress) => {
   return new Address(attrs)
 }
+const Address = model<AddressDoc, AddressModel>('Address', addressSchema)
+Address.createIndexes()
+
 export default Address

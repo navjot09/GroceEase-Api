@@ -26,10 +26,10 @@ const cartItemSchema = new Schema<ICartItem>({
     required: true,
   },
 })
-
-const CartItem = model<CartItemDoc, CartItemModel>('CartItem', cartItemSchema)
-CartItem.createIndexes()
 cartItemSchema.statics.build = (attrs: ICartItem) => {
   return new CartItem(attrs)
 }
+const CartItem = model<CartItemDoc, CartItemModel>('CartItem', cartItemSchema)
+CartItem.createIndexes()
+
 export default CartItem

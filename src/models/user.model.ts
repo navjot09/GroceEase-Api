@@ -16,7 +16,7 @@ interface UserModel extends Model<UserDoc> {
   build(attrs: IUser): UserDoc
 }
 
-const userSchema = new Schema(
+const userSchema = new Schema<IUser>(
   {
     Name: { type: String, required: true },
     Email: { type: String, required: true, unique: true },
@@ -27,10 +27,10 @@ const userSchema = new Schema(
   },
   { timestamps: true },
 )
-
-const User = model<UserDoc, UserModel>('User', userSchema)
-User.createIndexes()
 userSchema.statics.build = (attrs: IUser) => {
   return new User(attrs)
 }
+const User = model<UserDoc, UserModel>('User', userSchema)
+User.createIndexes()
+
 export default User

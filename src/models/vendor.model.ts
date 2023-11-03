@@ -28,10 +28,10 @@ const vendorSchema = new Schema(
   },
   { timestamps: true },
 )
-
-const Vendor = model<VendorDoc, VendorModel>('Vendor', vendorSchema)
-Vendor.createIndexes()
 vendorSchema.statics.build = (attrs: IVendor) => {
   return new Vendor(attrs)
 }
+const Vendor = model<VendorDoc, VendorModel>('Vendor', vendorSchema)
+Vendor.createIndexes()
+
 export default Vendor

@@ -15,10 +15,10 @@ const cartSchema = new Schema<ICart>({
     ref: 'User',
   },
 })
-
-const Cart = model<CartDoc, CartModel>('Cart', cartSchema)
-Cart.createIndexes()
 cartSchema.statics.build = (attrs: ICart) => {
   return new Cart(attrs)
 }
+const Cart = model<CartDoc, CartModel>('Cart', cartSchema)
+Cart.createIndexes()
+
 export default Cart

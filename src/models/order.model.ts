@@ -73,10 +73,10 @@ const orderSchema = new Schema<IOrder>({
     required: true,
   },
 })
-
-const Order = model<OrderDoc, OrderModel>('Order', orderSchema)
-Order.createIndexes()
 orderSchema.statics.build = (attrs: IOrder) => {
   return new Order(attrs)
 }
+const Order = model<OrderDoc, OrderModel>('Order', orderSchema)
+Order.createIndexes()
+
 export default Order

@@ -28,10 +28,10 @@ const orderItemSchema = new Schema<IOrderItem>({
     required: true,
   },
 })
-
-const OrderItem = model<OrderItemDoc, OrderItemModel>('OrderItem', orderItemSchema)
-OrderItem.createIndexes()
 orderItemSchema.statics.build = (attrs: IOrderItem) => {
   return new OrderItem(attrs)
 }
+const OrderItem = model<OrderItemDoc, OrderItemModel>('OrderItem', orderItemSchema)
+OrderItem.createIndexes()
+
 export default OrderItem

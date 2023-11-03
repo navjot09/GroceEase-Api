@@ -4,13 +4,23 @@ import User from '../models/user.model'
 import { JWT_SECRET } from '../utils/config'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
-import { HydratedDocument, Types } from 'mongoose'
+import { HydratedDocument, Schema, Types } from 'mongoose'
 
 const { sign } = jwt
 const { hashSync, genSaltSync, compare } = bcrypt
 
 export const createUser = async (
-  req: Request<{}, {}, { name: string; email: string; password: string; phone: string }>,
+  req: Request<
+    {},
+    {},
+    {
+      name: string
+      email: string
+      password: string
+      phone: string
+      deliveryAddress: Types.ObjectId
+    }
+  >,
   res: Response,
 ) => {
   try {
@@ -25,7 +35,7 @@ export const createUser = async (
       res.status(400).send({ title: 'Validation Fail', message: 'Input Validation Failed' })
       return
     }
-    const { name, email, password, phone } = req.body
+    const { name, email, password, phone, deliveryAddress } = req.body
     const userAlreadyExists = await User.findOne({ email })
     if (userAlreadyExists) {
       res.status(409).json({ title: 'Signup Fail', message: 'User Already Exist' })
@@ -38,7 +48,7 @@ export const createUser = async (
       Email: email,
       Password: securedPassword,
       Phone: phone,
-      DeliveryAddress: new Types.ObjectId(),
+      DeliveryAddress: deliveryAddress,
     })
     await user.save()
     if (JWT_SECRET) {
@@ -51,6 +61,7 @@ export const createUser = async (
       res.status(400).json({ title: 'JWT_SECRET missing' })
     }
   } catch (error: any) {
+    console.log(error)
     res.status(400).json({ title: 'Signup Failed', message: error?.message })
   }
 }

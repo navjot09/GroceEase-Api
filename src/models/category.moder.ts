@@ -18,10 +18,10 @@ const categorySchema = new Schema<CategoryDoc>(
   },
   { timestamps: true },
 )
-
-const Category = model<CategoryDoc, CategoryModel>('Category', categorySchema)
-Category.createIndexes()
 categorySchema.statics.build = (attrs: ICategory) => {
   return new Category(attrs)
 }
+const Category = model<CategoryDoc, CategoryModel>('Category', categorySchema)
+Category.createIndexes()
+
 export default Category
