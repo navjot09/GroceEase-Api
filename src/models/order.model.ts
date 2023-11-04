@@ -1,5 +1,4 @@
-import { Document, Model, SchemaTimestampsConfig } from 'mongoose'
-import { Schema, model, Types } from 'mongoose'
+import { Document, Model, SchemaTimestampsConfig, Schema, model, Types } from 'mongoose'
 
 const { ObjectId } = Schema.Types
 
@@ -73,9 +72,7 @@ const orderSchema = new Schema<IOrder>({
     required: true,
   },
 })
-orderSchema.statics.build = (attrs: IOrder) => {
-  return new Order(attrs)
-}
+orderSchema.statics.build = (attrs: IOrder) => new Order(attrs)
 const Order = model<OrderDoc, OrderModel>('Order', orderSchema)
 Order.createIndexes()
 

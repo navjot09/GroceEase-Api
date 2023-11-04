@@ -1,4 +1,4 @@
-import { Schema, model, Types, Document, SchemaTimestampsConfig, Model } from 'mongoose'
+import { Schema, model, Document, SchemaTimestampsConfig, Model } from 'mongoose'
 
 interface IVendor {
   Name: string
@@ -28,9 +28,7 @@ const vendorSchema = new Schema(
   },
   { timestamps: true },
 )
-vendorSchema.statics.build = (attrs: IVendor) => {
-  return new Vendor(attrs)
-}
+vendorSchema.statics.build = (attrs: IVendor) => new Vendor(attrs)
 const Vendor = model<VendorDoc, VendorModel>('Vendor', vendorSchema)
 Vendor.createIndexes()
 

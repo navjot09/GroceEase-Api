@@ -1,16 +1,17 @@
 import { connect } from 'mongoose'
-import { MONGODB_URI } from './config'
+import { MONGODB_URI } from '@utils/config'
+import Logger from '@utils/logger'
 
 async function connectToMongo() {
   try {
     if (MONGODB_URI) {
       await connect(MONGODB_URI)
-      console.log('Connected to MongoDB')
+      Logger.debug('Connected to MongoDB')
     } else {
       throw new Error('Invalid MONGODB_URI')
     }
   } catch (error) {
-    console.error(error)
+    Logger.error(error)
   }
 }
 

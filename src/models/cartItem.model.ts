@@ -3,7 +3,7 @@ import { Schema, model, Types, Model, SchemaTimestampsConfig } from 'mongoose'
 const { ObjectId } = Schema.Types
 interface ICartItem {
   CartId: Types.ObjectId
-  Quantity: Number
+  Quantity: number
   ProductId: Types.ObjectId
 }
 interface CartItemDoc extends Document, ICartItem, SchemaTimestampsConfig {}
@@ -26,9 +26,7 @@ const cartItemSchema = new Schema<ICartItem>({
     required: true,
   },
 })
-cartItemSchema.statics.build = (attrs: ICartItem) => {
-  return new CartItem(attrs)
-}
+cartItemSchema.statics.build = (attrs: ICartItem) => new CartItem(attrs)
 const CartItem = model<CartItemDoc, CartItemModel>('CartItem', cartItemSchema)
 CartItem.createIndexes()
 

@@ -1,23 +1,59 @@
 {
+    "root": true,
     "env": {
         "es2021": true,
         "node": true
     },
-    "extends": [
-        "airbnb-base"
-    ],
-    "overrides": [],
+    "settings": {
+        "import/resolver": {
+            "typescript": {
+                "alwaysTryTypes": true
+            }
+        },
+        "import/parsers": {
+            "@typescript-eslint/parser": [
+                ".ts",
+                ".tsx"
+            ]
+        }
+    },
+    "rules": {
+        "import/no-named-as-default": 0,
+        "import/no-named-as-default-member": 0,
+        "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-unsafe-member-access": 0,
+        "@typescript-eslint/no-unsafe-assignment": 0,
+        "@typescript-eslint/no-unsafe-argument": 0,
+        "@typescript-eslint/no-floating-promises": 0,
+        "no-console": 1
+    },
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
+        "project": "./tsconfig.json",
+        "tsconfigRootDir": "./",
         "ecmaVersion": "latest",
         "sourceType": "module"
     },
-    "rules": {
-        "semi": "off",
-        "import/extensions": [
-            "error",
-            {
-                "js": "always"
-            }
-        ]
-    }
+    "plugins": [
+        "node",
+        "@typescript-eslint",
+        "prettier",
+        "import"
+    ],
+    "extends": [
+        "plugin:@typescript-eslint/recommended",
+        "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        "plugin:prettier/recommended",
+        "plugin:import/recommended"
+    ],
+    "ignorePatterns": [
+        "node_modules/",
+        "dist/",
+        "build/",
+        "*.d.ts",
+        ".eslintrc.js",
+        ".eslintrc.json",
+        "example-ignore-file.js",
+        "example-ignore-directory/"
+    ]
 }

@@ -37,9 +37,7 @@ const productSchema = new Schema<IProduct>(
   },
   { timestamps: true },
 )
-productSchema.statics.build = (attrs: IProduct) => {
-  return new Product(attrs)
-}
+productSchema.statics.build = (attrs: IProduct) => new Product(attrs)
 const Product = model<ProductDoc, ProductModel>('Product', productSchema)
 Product.createIndexes()
 

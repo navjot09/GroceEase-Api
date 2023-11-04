@@ -1,4 +1,4 @@
-import { Schema, model, Types, SchemaTimestampsConfig, Model } from 'mongoose'
+import { Schema, model, SchemaTimestampsConfig, Model } from 'mongoose'
 
 interface ICategory {
   Name: string
@@ -18,9 +18,7 @@ const categorySchema = new Schema<CategoryDoc>(
   },
   { timestamps: true },
 )
-categorySchema.statics.build = (attrs: ICategory) => {
-  return new Category(attrs)
-}
+categorySchema.statics.build = (attrs: ICategory) => new Category(attrs)
 const Category = model<CategoryDoc, CategoryModel>('Category', categorySchema)
 Category.createIndexes()
 

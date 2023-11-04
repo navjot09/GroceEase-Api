@@ -1,4 +1,4 @@
-import { Schema, model, Types, Model, ResolveTimestamps, SchemaTimestampsConfig } from 'mongoose'
+import { Schema, model, Types, Model, SchemaTimestampsConfig } from 'mongoose'
 
 const { ObjectId } = Schema.Types
 
@@ -25,9 +25,7 @@ const addressSchema = new Schema<IAddress>(
   },
   { timestamps: true },
 )
-addressSchema.statics.build = (attrs: IAddress) => {
-  return new Address(attrs)
-}
+addressSchema.statics.build = (attrs: IAddress) => new Address(attrs)
 const Address = model<AddressDoc, AddressModel>('Address', addressSchema)
 Address.createIndexes()
 

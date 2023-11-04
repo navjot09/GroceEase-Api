@@ -1,9 +1,9 @@
-import express, { Router } from 'express'
-import { createUser, loginUser } from '../controllers/auth'
+import { createUser, loginUser } from '@controllers/auth'
+import { Router } from 'express'
 
-const router: Router = express.Router()
+const router: Router = Router()
 
-router.post('/createUser', createUser)
+router.post('/createUser', () => createUser)
 router.post('/loginUser', loginUser)
 
 export default router

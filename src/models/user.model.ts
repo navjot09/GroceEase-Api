@@ -27,9 +27,7 @@ const userSchema = new Schema<IUser>(
   },
   { timestamps: true },
 )
-userSchema.statics.build = (attrs: IUser) => {
-  return new User(attrs)
-}
+userSchema.statics.build = (attrs: IUser) => new User(attrs)
 const User = model<UserDoc, UserModel>('User', userSchema)
 User.createIndexes()
 

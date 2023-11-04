@@ -1,18 +1,19 @@
 import { Request, Response } from 'express'
-import Validator from 'validatorjs'
-import User from '../models/user.model'
-import { JWT_SECRET } from '../utils/config'
 import bcrypt from 'bcryptjs'
+import Validator from 'validatorjs'
 import jwt from 'jsonwebtoken'
-import { HydratedDocument, Schema, Types } from 'mongoose'
+import { Types } from 'mongoose'
+import { JWT_SECRET } from '@utils/config'
+import User from '@models/user.model'
+import Logger from '@utils/logger'
 
 const { sign } = jwt
 const { hashSync, genSaltSync, compare } = bcrypt
 
 export const createUser = async (
   req: Request<
-    {},
-    {},
+    object,
+    object,
     {
       name: string
       email: string
@@ -61,13 +62,13 @@ export const createUser = async (
       res.status(400).json({ title: 'JWT_SECRET missing' })
     }
   } catch (error: any) {
-    console.log(error)
+    Logger.error(error)
     res.status(400).json({ title: 'Signup Failed', message: error?.message })
   }
 }
 
 export const loginUser = async (
-  req: Request<{}, {}, { name: string; email: string; password: string; phone: number }>,
+  req: Request<object, object, { name: string; email: string; password: string; phone: number }>,
   res: Response,
 ) => {
   try {

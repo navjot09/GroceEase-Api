@@ -1,21 +1,16 @@
-import express, { Express, Request, Response } from 'express'
+import 'module-alias/register'
+import express, { Express, Response } from 'express'
 import bodyParser from 'body-parser'
-import { PORT } from './src/utils/config'
-import connectToMongo from './src/utils/db'
-import auth from './src/routes/auth'
-;(async function () {
-  try {
-    await connectToMongo()
-  } catch (error) {
-    console.log(error)
-  }
-})()
+import { PORT } from '@utils/config'
+import connectToMongo from '@db/index'
+import auth from '@routes/auth'
+import Logger from '@utils/logger'
+
+connectToMongo()
 
 const app: Express = express()
 
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`)
-})
+app.listen(PORT, () => Logger.debug(`Example app listening on port ${PORT}`))
 
 app.get('/', ({ res }: { res: Response }) => {
   res.send('Hello World!')

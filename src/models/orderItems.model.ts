@@ -3,7 +3,7 @@ import { Schema, model, Types, Model, SchemaTimestampsConfig } from 'mongoose'
 const { ObjectId } = Schema.Types
 interface IOrderItem {
   OrderId: Types.ObjectId
-  Quantity: Number
+  Quantity: number
   ProductId: Types.ObjectId
 }
 interface OrderItemDoc extends Document, IOrderItem, SchemaTimestampsConfig {}
@@ -28,9 +28,7 @@ const orderItemSchema = new Schema<IOrderItem>({
     required: true,
   },
 })
-orderItemSchema.statics.build = (attrs: IOrderItem) => {
-  return new OrderItem(attrs)
-}
+orderItemSchema.statics.build = (attrs: IOrderItem) => new OrderItem(attrs)
 const OrderItem = model<OrderItemDoc, OrderItemModel>('OrderItem', orderItemSchema)
 OrderItem.createIndexes()
 

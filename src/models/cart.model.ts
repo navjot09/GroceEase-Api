@@ -15,9 +15,7 @@ const cartSchema = new Schema<ICart>({
     ref: 'User',
   },
 })
-cartSchema.statics.build = (attrs: ICart) => {
-  return new Cart(attrs)
-}
+cartSchema.statics.build = (attrs: ICart) => new Cart(attrs)
 const Cart = model<CartDoc, CartModel>('Cart', cartSchema)
 Cart.createIndexes()
 
