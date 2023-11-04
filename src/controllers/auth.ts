@@ -37,7 +37,7 @@ export const createUser = async (
       return
     }
     const { name, email, password, phone, deliveryAddress } = req.body
-    const userAlreadyExists = await User.findOne({ email })
+    const userAlreadyExists = await User.findOne({ Email: email })
     if (userAlreadyExists) {
       res.status(409).json({ title: 'Signup Fail', message: 'User Already Exist' })
       return
@@ -53,7 +53,9 @@ export const createUser = async (
     })
     await user.save()
     if (JWT_SECRET) {
-      const authToken = sign(user.id, JWT_SECRET)
+      const authToken = sign({ userId: user.id }, JWT_SECRET, {
+        expiresIn: '1 day',
+      })
       res.status(200).json({
         title: 'Sign Up Successfull.',
         token: authToken,
@@ -73,7 +75,7 @@ export const loginUser = async (
 ) => {
   try {
     const { email, password } = req.body
-    const user = await User.findOne({ email })
+    const user = await User.findOne({ Email: email })
     if (!user) {
       res.status(202).json({ title: 'Login Failed', message: 'User not found.' })
       return
