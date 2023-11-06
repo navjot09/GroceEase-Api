@@ -8,7 +8,7 @@ interface IUser {
   Password: string
   Phone: string
   DateOfBirth?: Date
-  DeliveryAddress: Types.ObjectId
+  DeliveryAddress?: Types.ObjectId
 }
 interface UserDoc extends Document, IUser, SchemaTimestampsConfig {}
 
