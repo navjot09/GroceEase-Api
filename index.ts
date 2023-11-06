@@ -5,8 +5,10 @@ import { PORT } from '@utils/config'
 import connectToMongo from '@db/index'
 import auth from '@routes/auth'
 import Logger from '@utils/logger'
-
-connectToMongo()
+import address from '@routes/address'
+;(async () => {
+  await connectToMongo()
+})()
 
 const app: Express = express()
 
@@ -18,4 +20,5 @@ app.get('/', ({ res }: { res: Response }) => {
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/api/auth', auth)
+app.use('/api/address', address)
 // app.use('/api/products', products)

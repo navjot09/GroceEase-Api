@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import bcrypt from 'bcryptjs'
 import Validator from 'validatorjs'
 import jwt from 'jsonwebtoken'
-import { Types } from 'mongoose'
 import { JWT_SECRET } from '@utils/config'
 import User from '@models/user.model'
 import Logger from '@utils/logger'
@@ -19,7 +18,6 @@ export const createUser = async (
       email: string
       password: string
       phone: string
-      deliveryAddress: Types.ObjectId
     }
   >,
   res: Response,
@@ -36,7 +34,7 @@ export const createUser = async (
       res.status(400).send({ title: 'Validation Fail', message: 'Input Validation Failed' })
       return
     }
-    const { name, email, password, phone, deliveryAddress } = req.body
+    const { name, email, password, phone } = req.body
     const userAlreadyExists = await User.findOne({ Email: email })
     if (userAlreadyExists) {
       res.status(409).json({ title: 'Signup Fail', message: 'User Already Exist' })
@@ -49,7 +47,6 @@ export const createUser = async (
       Email: email,
       Password: securedPassword,
       Phone: phone,
-      DeliveryAddress: deliveryAddress,
     })
     await user.save()
     if (JWT_SECRET) {
