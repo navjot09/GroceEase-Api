@@ -5,7 +5,7 @@ import jwt from 'jsonwebtoken'
 import { ADMIN_REFER_CODE, JWT_SECRET } from '@utils/config'
 import User from '@models/user.model'
 import Logger from '@utils/logger'
-import Admin from '@models/admin.models'
+import Admin from '@models/admin.model'
 
 const { sign } = jwt
 const { hashSync, genSaltSync, compare } = bcrypt

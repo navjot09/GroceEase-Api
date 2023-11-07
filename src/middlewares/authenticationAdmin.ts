@@ -1,4 +1,4 @@
-import Admin from '@models/admin.models'
+import Admin from '@models/admin.model'
 import { JWT_SECRET } from '@utils/config'
 import Logger from '@utils/logger'
 import { NextFunction, Request, Response } from 'express'
