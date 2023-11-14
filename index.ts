@@ -6,6 +6,8 @@ import connectToMongo from '@db/index'
 import auth from '@routes/auth'
 import Logger from '@utils/logger'
 import address from '@routes/address'
+import category from '@routes/category'
+import product from '@routes/product'
 ;(async () => {
   await connectToMongo()
 })()
@@ -21,3 +23,5 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 app.use('/api/auth', auth)
 app.use('/api/address', address)
+app.use('/api/categories', category)
+app.use('/api/products', product)

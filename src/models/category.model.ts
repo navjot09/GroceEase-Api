@@ -1,9 +1,10 @@
-import { Schema, model, SchemaTimestampsConfig, Model } from 'mongoose'
+import { Schema, model, SchemaTimestampsConfig, Model, Types } from 'mongoose'
 
 interface ICategory {
   Name: string
   Description?: string
   Image?: string
+  Parent?: Types.ObjectId
 }
 interface CategoryDoc extends Document, ICategory, SchemaTimestampsConfig {}
 
@@ -15,6 +16,7 @@ const categorySchema = new Schema<CategoryDoc>(
     Name: { type: String, required: true },
     Description: { type: String },
     Image: { type: String },
+    Parent: { type: Schema.Types.ObjectId, ref: 'Category' },
   },
   { timestamps: true },
 )

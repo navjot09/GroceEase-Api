@@ -1,4 +1,4 @@
-import { Schema, model, Types, SchemaTimestampsConfig, Model } from 'mongoose'
+import { Schema, model, Types, SchemaTimestampsConfig, Model, Document } from 'mongoose'
 
 const { ObjectId } = Schema.Types
 

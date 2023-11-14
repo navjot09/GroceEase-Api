@@ -1,4 +1,4 @@
-import { Schema, model, Types, Model, SchemaTimestampsConfig } from 'mongoose'
+import { Schema, model, Types, Model, SchemaTimestampsConfig, Document } from 'mongoose'
 
 const { ObjectId } = Schema.Types
 interface ICartItem {

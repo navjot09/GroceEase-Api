@@ -3,17 +3,19 @@ import { Schema, model, Types, SchemaTimestampsConfig, Model } from 'mongoose'
 const { ObjectId } = Schema.Types
 interface IProduct {
   Name: string
-  Description: string
-  CategoryId: Types.ObjectId
+  Brand?: string
+  Description?: string
+  Category: Types.ObjectId
+  SubCategory?: Types.ObjectId
   Image?: string
   Price: number
   OnSale: boolean
-  SalePrice?: number
+  DiscountPrice?: number
+  Rating?: number
+  Type?: string
   Stock: number
-  Weight?: number
-  Unit?: string
-  Dimensions?: string
   isActive: boolean
+  Quantity?: string
 }
 
 interface ProductDoc extends Document, IProduct, SchemaTimestampsConfig {}
@@ -23,19 +25,37 @@ interface ProductModel extends Model<ProductDoc> {
 const productSchema = new Schema<IProduct>(
   {
     Name: { type: String, required: true },
-    Description: { type: String, required: true },
-    CategoryId: { type: ObjectId, required: true },
+    Brand: { type: String },
+    Description: { type: String },
+    Category: { type: ObjectId, required: true, ref: 'Category' },
+    SubCategory: { type: ObjectId, ref: 'Category' },
     Image: { type: String },
     Price: { type: Number, required: true },
     OnSale: { type: Boolean, default: false },
-    SalePrice: { type: Number },
+    Type: { type: String },
+    DiscountPrice: { type: Number },
+    Rating: { type: Number },
     Stock: { type: Number, default: 0 },
-    Weight: { type: Number },
-    Unit: { type: String },
-    Dimensions: { type: String },
+    Quantity: { type: String },
     isActive: { type: Boolean, default: true },
   },
   { timestamps: true },
+)
+productSchema.index(
+  {
+    Name: 'text',
+    Brand: 'text',
+    Type: 'text',
+    Description: 'text',
+  },
+  {
+    weights: {
+      Name: 10,
+      Brand: 5,
+      Type: 5,
+      Description: 3,
+    },
+  },
 )
 productSchema.statics.build = (attrs: IProduct) => new Product(attrs)
 const Product = model<ProductDoc, ProductModel>('Product', productSchema)

@@ -1,17 +1,17 @@
 import Admin from '@models/admin.model'
+import { asynchHandler } from '@utils/asyncHandler'
 import { JWT_SECRET } from '@utils/config'
-import Logger from '@utils/logger'
 import { NextFunction, Request, Response } from 'express'
 import { verify } from 'jsonwebtoken'
-export const authenticateAdmin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const authenticateAdmin = asynchHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const bearerToken = req.headers.authorization
     if (bearerToken && JWT_SECRET) {
       const token = bearerToken.split(' ')[1]
       const adminData = verify(token, JWT_SECRET) as { sub: string; scope: string }
       if (adminData?.scope !== 'admin') {
         res.status(401).json({ title: 'Authentication Fail', message: 'Invalid Scope' })
-        return next('route')
+        return
       }
       const admin = await Admin.findOne({ _id: adminData.sub })
       if (admin) {
@@ -19,13 +19,9 @@ export const authenticateAdmin = async (req: Request, res: Response, next: NextF
         return next()
       }
       res.status(404).json({ title: 'Authentication Fail', message: 'No admin found' })
-      return next('route')
+      return
     }
     res.status(401).json({ title: 'Authentication Fail', message: 'Invalid Token' })
-    return next('route')
-  } catch (error: any) {
-    res.status(400).json({ title: 'Authentication Fail', message: error?.message })
-    Logger.error(error)
-    return next('route')
-  }
-}
+    return
+  },
+)

@@ -4,26 +4,27 @@ import Validator from 'validatorjs'
 import jwt from 'jsonwebtoken'
 import { ADMIN_REFER_CODE, JWT_SECRET } from '@utils/config'
 import User from '@models/user.model'
-import Logger from '@utils/logger'
 import Admin from '@models/admin.model'
+import { asynchHandler } from '@utils/asyncHandler'
+import Cart from '@models/cart.model'
 
 const { sign } = jwt
 const { hashSync, genSaltSync, compare } = bcrypt
 
-export const createUser = async (
-  req: Request<
-    object,
-    object,
-    {
-      name: string
-      email: string
-      password: string
-      phone: string
-    }
-  >,
-  res: Response,
-) => {
-  try {
+export const createUser = asynchHandler(
+  async (
+    req: Request<
+      object,
+      object,
+      {
+        name: string
+        email: string
+        password: string
+        phone: string
+      }
+    >,
+    res: Response,
+  ) => {
     const validationRules = {
       name: 'required|string',
       email: 'required|email',
@@ -50,6 +51,8 @@ export const createUser = async (
       Phone: phone,
     })
     await user.save()
+    const cart = Cart.build({ UserId: user._id })
+    await cart.save()
     if (JWT_SECRET) {
       const authToken = sign({ sub: user.id }, JWT_SECRET, {
         expiresIn: '1 day',
@@ -61,17 +64,11 @@ export const createUser = async (
     } else {
       res.status(400).json({ title: 'JWT_SECRET missing' })
     }
-  } catch (error: any) {
-    Logger.error(error)
-    res.status(400).json({ title: 'Signup Failed', message: error?.message })
-  }
-}
+  },
+)
 
-export const loginUser = async (
-  req: Request<object, object, { email: string; password: string }>,
-  res: Response,
-) => {
-  try {
+export const loginUser = asynchHandler(
+  async (req: Request<object, object, { email: string; password: string }>, res: Response) => {
     const { email, password } = req.body
     const user = await User.findOne({ Email: email })
     if (!user) {
@@ -94,26 +91,23 @@ export const loginUser = async (
     } else {
       res.status(400).json({ title: 'JWT_SECRET missing' })
     }
-  } catch (error: any) {
-    res.status(400).json({ title: 'Login Failed', message: error?.message })
-  }
-}
-
-export const createAdmin = async (
-  req: Request<
-    object,
-    object,
-    {
-      name: string
-      email: string
-      password: string
-      phone: string
-      referCode: string
-    }
-  >,
-  res: Response,
-) => {
-  try {
+  },
+)
+export const createAdmin = asynchHandler(
+  async (
+    req: Request<
+      object,
+      object,
+      {
+        name: string
+        email: string
+        password: string
+        phone: string
+        referCode: string
+      }
+    >,
+    res: Response,
+  ) => {
     const validationRules = {
       name: 'required|string',
       email: 'required|email',
@@ -161,17 +155,11 @@ export const createAdmin = async (
     } else {
       res.status(400).json({ title: 'JWT_SECRET missing' })
     }
-  } catch (error: any) {
-    Logger.error(error)
-    res.status(400).json({ title: 'Signup Failed', message: error?.message })
-  }
-}
+  },
+)
 
-export const loginAdmin = async (
-  req: Request<object, object, { email: string; password: string }>,
-  res: Response,
-) => {
-  try {
+export const loginAdmin = asynchHandler(
+  async (req: Request<object, object, { email: string; password: string }>, res: Response) => {
     const { email, password } = req.body
     const admin = await Admin.findOne({ Email: email })
     if (!admin) {
@@ -194,7 +182,5 @@ export const loginAdmin = async (
     } else {
       res.status(400).json({ title: 'JWT_SECRET missing' })
     }
-  } catch (error: any) {
-    res.status(400).json({ title: 'Login Failed', message: error?.message })
-  }
-}
+  },
+)

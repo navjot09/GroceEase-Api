@@ -1,10 +1,10 @@
 import User from '@models/user.model'
+import { asynchHandler } from '@utils/asyncHandler'
 import { JWT_SECRET } from '@utils/config'
-import Logger from '@utils/logger'
 import { NextFunction, Request, Response } from 'express'
 import { verify } from 'jsonwebtoken'
-export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
-  try {
+export const authenticate = asynchHandler(
+  async (req: Request, res: Response, next: NextFunction) => {
     const bearerToken = req.headers.authorization
     if (bearerToken && JWT_SECRET) {
       const token = bearerToken.split(' ')[1]
@@ -14,14 +14,8 @@ export const authenticate = async (req: Request, res: Response, next: NextFuncti
         res.locals.id = user._id
         return next()
       }
-      res.status(404).json({ title: 'Authentication Fail', message: 'No user found' })
-      return next('route')
+      return res.status(404).json({ title: 'Authentication Fail', message: 'No user found' })
     }
-    res.status(401).json({ title: 'Authentication Fail', message: 'Invalid Token' })
-    return next('route')
-  } catch (error: any) {
-    res.status(400).json({ title: 'Authentication Fail', message: error?.message })
-    Logger.error(error)
-    return next('route')
-  }
-}
+    return res.status(401).json({ title: 'Authentication Fail', message: 'Invalid Token' })
+  },
+)
