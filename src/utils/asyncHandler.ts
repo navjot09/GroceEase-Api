@@ -7,6 +7,6 @@ export const asynchHandler = <TRequest>(
   return (req: Request<TRequest>, res: Response, next: NextFunction) =>
     fn(req, res, next).catch((err) => {
       Logger.error(err)
-      res.status(400).json({ title: 'Failed', message: 'Something went wrong' })
+      res.status(400).json({ success: false, title: 'Failed', message: 'Something went wrong' })
     })
 }

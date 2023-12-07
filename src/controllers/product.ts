@@ -24,9 +24,7 @@ export const getProducts = asynchHandler(
     const newOffset = offset ? Number(offset) : 0
     const query = Product.aggregate()
     const subCategories = subCategory?.split(',')
-    const matchStage: any = {
-      $text: { $search: search },
-    }
+    const matchStage: any = {}
     if (category) {
       matchStage.Category = category
     }
@@ -61,3 +59,44 @@ export const getProducts = asynchHandler(
     return res.status(200).json(result)
   },
 )
+
+export const getFeaturedProducts = asynchHandler(async (req: Request, res: Response) => {
+  const result = await Product.aggregate([
+    {
+      $group: {
+        _id: {
+          Category: '$Category',
+        },
+        products: {
+          $push: '$$ROOT',
+        },
+      },
+    },
+    {
+      $lookup: {
+        from: 'categories',
+        localField: '_id.Category',
+        foreignField: '_id',
+        as: 'result',
+      },
+    },
+    {
+      $unwind: {
+        path: '$result',
+      },
+    },
+    {
+      $project: {
+        Category: '$result',
+        products: {
+          $slice: ['$products', 10],
+        },
+      },
+    },
+    {
+      $limit: 3,
+    },
+  ]).exec()
+  console.count('called')
+  return res.status(200).json({ success: true, data: result })
+})

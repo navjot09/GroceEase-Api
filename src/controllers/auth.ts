@@ -33,13 +33,15 @@ export const createUser = asynchHandler(
     }
     const validation = new Validator(req.body, validationRules)
     if (validation.fails()) {
-      res.status(400).send({ title: 'Validation Fail', message: 'Input Validation Failed' })
+      res
+        .status(400)
+        .send({ success: false, title: 'Validation Fail', message: 'Input Validation Failed' })
       return
     }
     const { name, email, password, phone } = req.body
     const userAlreadyExists = await User.findOne({ Email: email })
     if (userAlreadyExists) {
-      res.status(409).json({ title: 'Signup Fail', message: 'User Already Exist' })
+      res.status(409).json({ success: false, title: 'Signup Fail', message: 'User Already Exist' })
       return
     }
     const salt = genSaltSync(10)
@@ -58,8 +60,12 @@ export const createUser = asynchHandler(
         expiresIn: '1 day',
       })
       res.status(200).json({
+        success: true,
         title: 'Sign Up Successfull.',
-        token: authToken,
+        message: 'Sign Up Successfull.',
+        data: {
+          token: authToken,
+        },
       })
     } else {
       res.status(400).json({ title: 'JWT_SECRET missing' })
@@ -72,12 +78,14 @@ export const loginUser = asynchHandler(
     const { email, password } = req.body
     const user = await User.findOne({ Email: email })
     if (!user) {
-      res.status(202).json({ title: 'Login Failed', message: 'User not found.' })
+      res.status(202).json({ success: false, title: 'Login Failed', message: 'User not found.' })
       return
     }
     const passwordCompare = await compare(password, user.Password)
     if (!passwordCompare) {
-      res.status(202).json({ title: 'Login Failed', message: 'Password not correct.' })
+      res
+        .status(202)
+        .json({ success: false, title: 'Login Failed', message: 'Password not correct.' })
       return
     }
     if (JWT_SECRET) {
@@ -85,11 +93,15 @@ export const loginUser = asynchHandler(
         expiresIn: '1 day',
       })
       res.status(200).json({
+        success: true,
         title: 'Log In Successfull.',
-        token: authToken,
+        message: 'Log In Successfull.',
+        data: {
+          token: authToken,
+        },
       })
     } else {
-      res.status(400).json({ title: 'JWT_SECRET missing' })
+      res.status(400).json({ title: 'JWT_SECRET missing', message: 'Server Error.' })
     }
   },
 )

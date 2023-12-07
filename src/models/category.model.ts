@@ -16,7 +16,7 @@ const categorySchema = new Schema<CategoryDoc>(
     Name: { type: String, required: true },
     Description: { type: String },
     Image: { type: String },
-    Parent: { type: Schema.Types.ObjectId, ref: 'Category' },
+    Parent: { type: Schema.Types.ObjectId, ref: 'Category', index: true },
   },
   { timestamps: true },
 )

@@ -2,10 +2,48 @@ import Category from '@models/category.model'
 import { asynchHandler } from '@utils/asyncHandler'
 import { Request, Response } from 'express'
 
-export const getCategories = asynchHandler(async (req: Request, res: Response) => {
-  const result = await Category.where('Parent').exists(false)
-  res.status(200).json(result)
-})
+export const getCategories = asynchHandler(
+  async (
+    req: Request<
+      object,
+      object,
+      object,
+      {
+        include?: 'children'
+      }
+    >,
+    res: Response,
+  ) => {
+    const { include } = req.query
+    if (include === 'children') {
+      const result = await Category.aggregate([
+        {
+          $group: {
+            _id: '$Parent',
+            children: {
+              $push: '$$ROOT',
+            },
+          },
+        },
+        {
+          $lookup: {
+            from: 'categories',
+            localField: '_id',
+            foreignField: '_id',
+            as: 'parent',
+          },
+        },
+        {
+          $unwind: '$parent',
+        },
+      ]).exec()
+      res.status(200).json({ success: true, data: result })
+      return
+    }
+    const result = await Category.where('Parent').exists(false)
+    res.status(200).json({ success: true, data: result })
+  },
+)
 
 export const getCategoryDetails = asynchHandler(
   async (req: Request<{ id: string }>, res: Response) => {

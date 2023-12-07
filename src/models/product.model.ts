@@ -27,7 +27,7 @@ const productSchema = new Schema<IProduct>(
     Name: { type: String, required: true },
     Brand: { type: String },
     Description: { type: String },
-    Category: { type: ObjectId, required: true, ref: 'Category' },
+    Category: { type: ObjectId, required: true, ref: 'Category', index: true },
     SubCategory: { type: ObjectId, ref: 'Category' },
     Image: { type: String },
     Price: { type: Number, required: true },
