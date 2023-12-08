@@ -4,12 +4,12 @@
   "description": "Backend for GroceEase",
   "main": "index.ts",
   "_moduleAliases": {
-    "@controllers": "src/controllers",
-    "@db": "src/db",
-    "@middlewares": "src/middlewares",
-    "@models": "src/models",
-    "@routes": "src/routes",
-    "@utils": "src/utils"
+    "@controllers": "dist/src/controllers",
+    "@db": "dist/src/db",
+    "@middlewares": "dist/src/middlewares",
+    "@models": "dist/src/models",
+    "@routes": "dist/src/routes",
+    "@utils": "dist/src/utils"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
