@@ -49,10 +49,11 @@ export const getCategoryDetails = asynchHandler(
   async (req: Request<{ id: string }>, res: Response) => {
     const category = await Category.findOne({ _id: req.params.id })
     if (!category) {
-      res.status(404).json({ title: 'Not Found', message: 'Category not found' })
+      res.status(404).json({ success: false, title: 'Not Found', message: 'Category not found' })
       return
     }
     const childrens = await Category.find({ Parent: category._id })
-    res.status(200).json({ data: category, Children: childrens })
+    const result = { parent: category, children: childrens }
+    res.status(200).json({ success: true, data: result })
   },
 )
