@@ -1,6 +1,7 @@
 import Product from '@models/product.model'
 import { asynchHandler } from '@utils/asyncHandler'
 import { Request, Response } from 'express'
+import { Types } from 'mongoose'
 
 export const getProducts = asynchHandler(
   async (
@@ -23,10 +24,10 @@ export const getProducts = asynchHandler(
     const newLimit = limit ? Number(limit) : 25
     const newOffset = offset ? Number(offset) : 0
     const query = Product.aggregate()
-    const subCategories = subCategory?.split(',')
+    const subCategories = subCategory?.split(',').map((item) => new Types.ObjectId(item))
     const matchStage: any = {}
     if (category) {
-      matchStage.Category = category
+      matchStage.Category = new Types.ObjectId(category)
     }
     if (subCategories) {
       matchStage.SubCategory = { $in: subCategories }
@@ -50,13 +51,15 @@ export const getProducts = asynchHandler(
           [sortField === 'Price' ? 'FinalPrice' : 'Rating']: sortDirection === 'ASC' ? 1 : -1,
         })
       } else {
-        return res.status(400).json({ title: 'Invalid Request', message: 'Unsupported Sort' })
+        return res
+          .status(400)
+          .json({ success: false, title: 'Invalid Request', message: 'Unsupported Sort' })
       }
     } else if (search) {
       query.sort({ score: { $meta: 'textScore' } })
     }
     const result = await query.skip(newOffset).limit(newLimit).exec()
-    return res.status(200).json(result)
+    return res.status(200).json({ success: true, data: result })
   },
 )
 
@@ -97,6 +100,14 @@ export const getFeaturedProducts = asynchHandler(async (req: Request, res: Respo
       $limit: 3,
     },
   ]).exec()
-  console.count('called')
   return res.status(200).json({ success: true, data: result })
+})
+
+export const getProduct = asynchHandler(async (req: Request<{ id: string }>, res: Response) => {
+  const product = await Product.findOne({ _id: req.params.id })
+  if (!product) {
+    res.status(404).json({ success: false, title: 'Not Found', message: 'Product not found' })
+    return
+  }
+  res.status(200).json({ success: true, data: product })
 })

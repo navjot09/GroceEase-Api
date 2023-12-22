@@ -5,7 +5,7 @@ import Validator from 'validatorjs'
 
 export const getAddress = asynchHandler(async (req: Request, res: Response) => {
   const addresses = await Address.find({ UserId: res.locals.id })
-  res.status(200).json(addresses)
+  res.status(200).json({ success: true, data: addresses })
 })
 export const postAddress = asynchHandler(
   async (
@@ -24,7 +24,9 @@ export const postAddress = asynchHandler(
     }
     const validation = new Validator(req.body, validationRules)
     if (validation.fails()) {
-      res.status(400).send({ title: 'Validation Fail', message: 'Input Validation Failed' })
+      res
+        .status(400)
+        .send({ success: false, title: 'Validation Fail', message: 'Input Validation Failed' })
       return
     }
     const { addressLine1, city, state, zipCode } = req.body
@@ -36,33 +38,39 @@ export const postAddress = asynchHandler(
       ZipCode: zipCode,
     })
     await address.save()
-    res.status(201).json({ title: 'Success', message: 'Address Saved Succesfully' })
+    res.status(201).json({ success: true, title: 'Success', message: 'Address Saved Succesfully' })
   },
 )
 
 export const getAddressById = asynchHandler(async (req: Request<{ id: string }>, res: Response) => {
   const address = await Address.findOne({ _id: req.params.id })
   if (!address) {
-    res.status(404).json({ title: 'Not Found', message: 'Address not found' })
+    res.status(404).json({ success: false, title: 'Not Found', message: 'Address not found' })
     return
   }
   if (address?.UserId?.equals(res.locals.id)) {
-    res.status(200).json(address)
+    res.status(200).json({ success: true, data: address })
     return
   }
-  res.status(401).json({ title: 'Unauthorized', message: "Address doesn't belongs to user" })
+  res
+    .status(401)
+    .json({ success: false, title: 'Unauthorized', message: "Address doesn't belongs to user" })
 })
 
 export const deleteAddress = asynchHandler(async (req: Request, res: Response) => {
   const address = await Address.findOne({ _id: req.params.id })
   if (!address) {
-    res.status(404).json({ title: 'Not Found', message: 'Address not found' })
+    res.status(404).json({ success: false, title: 'Not Found', message: 'Address not found' })
     return
   }
   if (address?.UserId?.equals(res.locals.id)) {
     await Address.findByIdAndDelete(address._id)
-    res.status(200).json({ title: 'Success', message: 'Address Deleted Succesfully' })
+    res
+      .status(200)
+      .json({ success: true, title: 'Success', message: 'Address Deleted Succesfully' })
     return
   }
-  res.status(401).json({ title: 'Unauthorized', message: "Address doesn't belongs to user" })
+  res
+    .status(401)
+    .json({ success: false, title: 'Unauthorized', message: "Address doesn't belongs to user" })
 })

@@ -8,8 +8,6 @@ interface IOrder {
   TotalAmount: number
   Status: 'pending' | 'completed' | 'cancelled'
   DeliveryAddress: Types.ObjectId
-  Discount?: number
-  ShippingCost: number
   PaymentMethod: 'cash' | 'online'
   PaymentStatus: 'pending' | 'completed'
   DeliveryDate: Date
@@ -35,13 +33,6 @@ const orderSchema = new Schema<IOrder>({
   DeliveryAddress: {
     type: ObjectId,
     ref: 'Address',
-    required: true,
-  },
-  Discount: {
-    type: Number,
-  },
-  ShippingCost: {
-    type: Number,
     required: true,
   },
   PaymentMethod: {

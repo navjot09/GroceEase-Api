@@ -1,7 +1,7 @@
 import { Schema, model, Types, Model, SchemaTimestampsConfig, Document } from 'mongoose'
 
 const { ObjectId } = Schema.Types
-interface ICartItem {
+export interface ICartItem {
   CartId: Types.ObjectId
   Quantity: number
   ProductId: Types.ObjectId

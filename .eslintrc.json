@@ -56,6 +56,7 @@
         "node_modules/",
         "dist/",
         "build/",
+        "logs/",
         "*.d.ts",
         ".eslintrc.js",
         ".eslintrc.json",

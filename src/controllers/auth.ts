@@ -68,7 +68,7 @@ export const createUser = asynchHandler(
         },
       })
     } else {
-      res.status(400).json({ title: 'JWT_SECRET missing' })
+      res.status(400).json({ success: false, title: 'JWT_SECRET missing' })
     }
   },
 )
@@ -101,7 +101,9 @@ export const loginUser = asynchHandler(
         },
       })
     } else {
-      res.status(400).json({ title: 'JWT_SECRET missing', message: 'Server Error.' })
+      res
+        .status(400)
+        .json({ success: false, title: 'JWT_SECRET missing', message: 'Server Error.' })
     }
   },
 )
