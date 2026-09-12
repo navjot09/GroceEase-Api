@@ -21,16 +21,10 @@ export const getCartItems = asynchHandler(async (req: Request, res: Response) =>
 })
 
 export const getItinerary = asynchHandler(async (req: Request, res: Response) => {
-  const cart: any = await Cart.aggregate().match({ UserId: res.locals.id }).lookup({
-    from: 'cartitems',
-    localField: '_id',
-    foreignField: 'CartId',
-    as: 'CartItems',
-  })
-  if (!cart?.[0]?.CartItems?.length) {
-    res.status(204).json({ success: true, title: 'Cart Empty', message: 'Cart is Empty' })
-    return
-  }
+  // This used to run the whole $match + $lookup once just to test emptiness, then
+  // re-issue the identical stages as the prefix of the real pipeline — two full
+  // passes over the cart per request. Run the real pipeline once and settle the
+  // empty-vs-missing distinction afterwards, on the rare empty path only.
   const itinerary = await Cart.aggregate()
     .match({ UserId: res.locals.id })
     .lookup({
@@ -90,6 +84,11 @@ export const getItinerary = asynchHandler(async (req: Request, res: Response) =>
       },
     })
   if (!itinerary?.[0]) {
+    const cartExists = await Cart.exists({ UserId: res.locals.id })
+    if (cartExists) {
+      res.status(204).json({ success: true, title: 'Cart Empty', message: 'Cart is Empty' })
+      return
+    }
     res.status(404).json({ success: false, title: 'Not Found', message: 'Cart not found' })
     return
   }

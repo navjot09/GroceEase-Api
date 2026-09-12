@@ -9,7 +9,12 @@ export const authenticate = asynchHandler(
     if (bearerToken && JWT_SECRET) {
       const token = bearerToken.split(' ')[1]
       const userData = verify(token, JWT_SECRET) as { sub: string }
-      const user = await User.findOne({ _id: userData.sub })
+      // `exists` keeps the revoked/deleted-user check but returns only { _id }
+      // instead of hydrating the full user document (bcrypt hash included) on
+      // every authenticated request. res.locals.id must stay an ObjectId: it
+      // feeds aggregation $match stages, which do not apply schema casting, so
+      // a raw string there would silently match zero documents.
+      const user = await User.exists({ _id: userData.sub })
       if (user) {
         res.locals.id = user._id
         return next()

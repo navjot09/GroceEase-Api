@@ -13,13 +13,8 @@ import cart from '@routes/cart'
 import order from '@routes/order'
 import self from '@routes/self'
 import { PORT } from '@utils/config'
-;(async () => {
-  await connectToMongo()
-})()
 
 const app: Express = express()
-
-app.listen(PORT, () => Logger.debug(`Example app listening on port ${PORT}`))
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call
 app.use(cors<Request>())
@@ -38,3 +33,23 @@ app.use('/api/cartItems', cartItem)
 app.use('/api/cart', cart)
 app.use('/api/order', order)
 app.use('/api/self', self)
+
+// Connect (and build indexes) before accepting traffic. Previously `app.listen`
+// ran in the same tick as an un-awaited connect whose error was swallowed, so a
+// failed connection left the server up with every request buffering for 10s and
+// then returning a misleading generic 400.
+;(async () => {
+  try {
+    await connectToMongo()
+    app.listen(PORT, () => Logger.debug(`Example app listening on port ${PORT}`))
+  } catch (error) {
+    // Flush winston (it has file transports, so a bare process.exit would drop
+    // the very message this block exists to surface) and then exit explicitly.
+    // Exiting cannot wait for an idle event loop: mongoose queues autoIndex
+    // builds at model-import time, and those buffered operations keep the
+    // process alive for bufferTimeoutMS before throwing uncaught.
+    Logger.error(error)
+    Logger.on('finish', () => process.exit(1))
+    Logger.end()
+  }
+})()

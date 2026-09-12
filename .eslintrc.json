@@ -61,6 +61,7 @@
         ".eslintrc.js",
         ".eslintrc.json",
         "example-ignore-file.js",
-        "example-ignore-directory/"
+        "example-ignore-directory/",
+        "scripts/"
     ]
 }
